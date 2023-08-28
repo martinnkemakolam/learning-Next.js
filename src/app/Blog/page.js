@@ -8,7 +8,7 @@ export default async function Home() {
         post.map((item)=>{
             return (
               <article key={item.id}>
-                <Link href={`/Blog/${item.id}`}><h1>{item.id} {item.title}</h1></Link>
+                <Link href={`/Blog/${item.id}`}><h1>{item.id} {item.title} {item.author}</h1></Link>
               </article>
             )
           })
@@ -18,8 +18,12 @@ export default async function Home() {
   }
   
 async function getStaticProps() {
-  let post = await fetch('https://jsonplaceholder.typicode.com/posts')
+  let post = await fetch('http://localhost:4000/posts', {
+    next:{
+      revalidate: 10
+    }
+  })
   let postJson = await post.json()
   
-  return postJson.slice(0, 5)
+  return postJson
 }

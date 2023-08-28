@@ -1,4 +1,5 @@
 import {notFound} from 'next/navigation'
+import BlogBody from './blogBody';
 export const dynamicParams = true;
 
 export default async function Home({params}) {
@@ -8,8 +9,7 @@ export default async function Home({params}) {
   }
     return (
       <>
-      <h1>{data.title}</h1>
-      <p>{data.body}</p>
+      <BlogBody title={data.title} body={data.body}/>
       </>
     )
   }
@@ -23,13 +23,13 @@ export async function generateStaticParams() {
       blogID: '3'
     },{
       blogID: '4'
-    },{
-      blogID: '5'
     }
   ]
 }
   async function getStaticProps(params) {
-    let post = await fetch(`https://jsonplaceholder.typicode.com/posts/${params.blogID}`)
+    let post = await fetch(`http://localhost:4000/posts/${params.blogID}`, {next: {
+      revalidate: 3
+    }})
     let postJson = await post.json()
     if (!postJson.id) {
       return null
